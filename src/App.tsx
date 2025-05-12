@@ -30,7 +30,7 @@ function App() {
 
   const uploadMutation: UseMutationResult<any, unknown, FormData> = useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await axios.post('https://gsbg5pj5-3000.inc1.devtunnels.ms/api/upload', formData, {
+      const response = await axios.post('https://anton.markcoders.com/dynamic_qouting_system/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         responseType: 'blob',
       });

@@ -1,4 +1,5 @@
-
+// Install dependencies first
+// npm install @tanstack/react-query axios sonner react-dropzone lucide-react
 
 import { useState, useCallback } from 'react';
 import { Button } from './components/ui/button';
@@ -15,21 +16,24 @@ function App() {
 
   const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
     const selectedFile = acceptedFiles[0];
-    if (selectedFile.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-      toast.error('Only .xlsx files are accepted.');
+    if (!selectedFile) return;
+
+    if (!selectedFile.name.endsWith('.xlsx')) {
+      toast.error('Invalid file format. Only .xlsx files are accepted.');
       return;
     }
+
     setFile(selectedFile);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: false,
-    accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] },
   });
 
   const uploadMutation: UseMutationResult<any, unknown, FormData> = useMutation({
     mutationFn: async (formData: FormData) => {
+
       const response = await axios.post('https://anton.markcoders.com/dynamic_qouting_system/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         responseType: 'blob',
@@ -72,14 +76,26 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="border border-dashed border-gray-400 p-6 rounded-lg max-w-md w-full text-center">
-        <div {...getRootProps()} className={`cursor-pointer ${uploadMutation.isPending ? 'opacity-50 pointer-events-none' : ''}`}>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
+      <div className="border border-dashed border-gray-400 p-6 rounded-lg w-full max-w-screen-lg text-center bg-white shadow-md">
+        <h1 className="text-2xl lg:text-3xl font-semibold mb-4 poppins-bold ">Dynamic Quoting System</h1>
+
+        <a 
+          href="https://anton.markcoders.com/dynamic_qouting_system/api/example-file" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+      
+          className="text-black-500 underline mb-6 inline-block"
+        >
+          Download Sample File
+        </a>
+
+        <div {...getRootProps()} className={`cursor-pointer border p-6 rounded ${uploadMutation.isPending ? 'opacity-50 pointer-events-none' : ''}`}>
           <input {...getInputProps()} />
           {isDragActive ? (
             <p>Drop the file here...</p>
           ) : (
-            <p>Drag and drop an XLSX file here, or click to select</p>
+            <p>Drag and drop any file here, or click to select (Only .xlsx files accepted)</p>
           )}
         </div>
 

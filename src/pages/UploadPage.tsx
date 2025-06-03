@@ -138,7 +138,7 @@ function UploadPage() {
         },
         headers: {
           "Authorization": "Bearer " + token,
-          responseType: "Blob"
+          responseType: "blob"
         }
 
       });
@@ -146,7 +146,6 @@ function UploadPage() {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'sample-file.xlsx'); // Change name/extension as needed
       document.body.appendChild(link);
       link.click();
       link.remove();

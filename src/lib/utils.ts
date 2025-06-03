@@ -9,6 +9,7 @@ export type Filters = {
   Status_Desc?: string
   Branch?: string
   Year?: number
+  JobNumber?:string
 }
 
 export const getFiltersFromUrl = (search: string): Filters => {
@@ -38,6 +39,27 @@ export const getFiltersFromUrl = (search: string): Filters => {
 
   const maybeBranch = parseString("Branch")
   if (maybeBranch !== undefined) result.Branch = maybeBranch
+  const maybeJobNumber = parseString("JobNumber")
+  if (maybeJobNumber !== undefined) result.JobNumber = maybeJobNumber
 
   return result
 }
+
+
+export const extractLastPart = (url: string, extenstion:string): string => {
+  try {
+    if (!url || typeof url !== 'string') throw new Error("Invalid URL");
+    const parts = url.split('/');
+    const lastPart = parts.pop();
+    if (!lastPart) throw new Error("No part found after last slash");
+    return lastPart+extenstion;
+  } catch (err: unknown) {
+    const fallback = Math.random().toString(36).substring(2, 10);
+    if (err instanceof Error) {
+      console.error("extractLastPart Error:", err.message, "Using fallback:", fallback);
+    } else {
+      console.error("extractLastPart Unknown Error. Using fallback:", fallback);
+    }
+    return fallback+extenstion;
+  }
+};

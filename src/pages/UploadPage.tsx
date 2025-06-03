@@ -11,7 +11,7 @@ import type { AxiosError } from 'axios';
 import { useUserStore } from "@/stores/user.store.ts"
 import Logout from '@/components/ui/Logout';
 import Filter from '@/components/Filter';
-import { getFiltersFromUrl } from '@/lib/utils';
+import { extractLastPart, getFiltersFromUrl } from '@/lib/utils';
 import { useLocation } from "react-router-dom"
 function UploadPage() {
   const { token } = useUserStore();
@@ -132,24 +132,25 @@ function UploadPage() {
 
     try {
       setIsPending(true)
-      const res = await axios.get('https://anton.markcoders.com/dynamic_qouting_system/api/export', {
+      const response = await axios.get('https://anton.markcoders.com/dynamic_qouting_system/api/export', {
         params: {
           ...(getFiltersFromUrl(location.search) || {}),
         },
         headers: {
           "Authorization": "Bearer " + token,
-          responseType: "blob"
-        }
+        },
+        responseType: "blob"
 
       });
 
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
+      const fileName = extractLastPart(url, ".xlsx")
+      link.setAttribute('download', fileName); // Change name/extension as needed
       document.body.appendChild(link);
       link.click();
       link.remove();
-
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const msg = err.response?.data?.message || 'Error Fetching Filtered failed';

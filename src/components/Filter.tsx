@@ -140,7 +140,7 @@ useEffect(() => {
         {selected && (
           <button
             onClick={() => removeParam(key)}
-            className="absolute right-2 top-1/2 bg-white -translate-y-1/2 p-1 hover:bg-muted rounded-full"
+            className="absolute right-2 top-1/2 bg-red-400  -translate-y-1/2 p-1 hover:bg-red-600 rounded-full"
           >
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
@@ -162,7 +162,7 @@ useEffect(() => {
       {jobNumberInput && (
         <button
           onClick={() => setJobNumberInput("")}
-          className="absolute right-2 top-1/2 bg-white -translate-y-1/2 p-1 hover:bg-muted rounded-full"
+          className="absolute right-2 top-1/2 bg-red-400  -translate-y-1/2 p-1 hover:bg-red-600 rounded-full"
         >
           <X className="h-4 w-4 text-muted-foreground" />
         </button>

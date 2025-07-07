@@ -164,11 +164,11 @@ function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex flex-col gap-[30px] items-center justify-center p-4 bg-gray-50">
+    <div className="min-h-screen relative flex flex-col  gap-[30px] items-center justify-center p-4 ">
       <div className='absolute top-[50px] right-[50px]'>
         <Logout />
       </div>
-      <div className="border border-dashed border-gray-400 p-6 rounded-lg w-full max-w-screen-lg text-center bg-white shadow-md">
+      <div className="border border-dashed border-red-400 p-6 rounded-lg w-full max-w-screen-lg text-center  shadow-md">
         <h1 className="text-2xl lg:text-3xl font-semibold mb-4 poppins-bold ">Dynamic Quoting System</h1>
 
 
@@ -190,7 +190,7 @@ function UploadPage() {
         </div>
 
         {file && (
-          <div className="mt-4 relative bg-gray-100 p-4 rounded flex items-center justify-center">
+          <div className="mt-4 relative p-4 rounded flex items-center justify-center">
             <p className="text-sm truncate max-w-[80%]">{file.name}</p>
             <button
               className="absolute top-2 right-2"
@@ -222,7 +222,7 @@ function UploadPage() {
         )}
       </div>
 
-      <div className="border border-dashed border-gray-400 p-6 rounded-lg w-full max-w-screen-lg text-center bg-white shadow-md">
+      <div className="border border-dashed border-red-400 p-6 rounded-lg w-full max-w-screen-lg text-center  shadow-md">
         <h1 className="text-2xl lg:text-3xl font-semibold mb-4 poppins-bold ">Fetch data from the EKOOMS database.</h1>
 
         <Filter />

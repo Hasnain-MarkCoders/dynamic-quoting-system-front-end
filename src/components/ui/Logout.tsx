@@ -20,7 +20,7 @@ const logout = useUserStore((state) => state.logout);
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="cursor-pointer top-[50px] bg-gray-300 hover:bg-gray-200 rounded-[10px] p-[10px] right-[50px]">
+        <div className="cursor-pointer top-[50px] bg-red-400 hover:bg-red-600 rounded-[10px] p-[10px] right-[50px]">
           <LogOut />
         </div>
       </DialogTrigger>

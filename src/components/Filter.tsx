@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useSearchParams, useNavigate } from "react-router-dom"
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom"
 import axios from "axios"
 import {
   Select,
@@ -10,6 +10,10 @@ import {
 } from "@/components/ui/select"
 import { X } from "lucide-react"
 import { useDebounce } from "use-debounce"
+import { toast } from "sonner"
+import { extractLastPart, getFiltersFromUrl } from "@/lib/utils"
+import { useUserStore } from "@/stores/user.store"
+import { Button } from "./ui/button"
 
 
 
@@ -70,11 +74,14 @@ const FILTERS: FilterMap[] = [
 ]
 
 const FilterBar: React.FC = () => {
+    const { token } = useUserStore(); 
   const [filters, setFilters] = useState<Record<string, FilterOptionType>>({})
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [jobNumberInput, setJobNumberInput] = useState(searchParams.get("JobNumber") ?? "")
 const [debouncedJobNumber] = useDebounce(jobNumberInput, 400)
+  const location = useLocation()
+  const [isPending, setIsPending] = useState(false)
 
 useEffect(() => {
   if (debouncedJobNumber) {
@@ -114,6 +121,46 @@ useEffect(() => {
     params.delete(key)
     navigate({ search: params.toString() })
   }
+  const handleFetchFilteredData = async () => {
+
+
+    try {
+      setIsPending(true)
+      const response = await axios.get('https://anton.markcoders.com/dynamic_qouting_system/api/export', {
+        params: {
+          ...(getFiltersFromUrl(location.search) || {}),
+        },
+        headers: {
+          "Authorization": "Bearer " + token,
+        },
+        responseType: "blob"
+
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      const fileName = extractLastPart(url, ".xlsx")
+      link.setAttribute('download', fileName); // Change name/extension as needed
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const msg = err.response?.data?.message || 'Error Fetching Filtered failed';
+        toast.error(msg);
+      } else {
+        toast.error('Unexpected error');
+      }
+    }finally{
+      setIsPending(false)
+    }
+  };
+const hasActiveFilters = React.useMemo(() => {
+  const params = getFiltersFromUrl(location.search);
+  return Object.keys(params).length > 0;
+}, [location.search, searchParams]);
+
 
   return (
     <div className="space-y-4">
@@ -170,7 +217,21 @@ useEffect(() => {
     </div>
   )
 })}
+<div>
+  {
+
+  hasActiveFilters&& <Button
+        className="w-full md:w-[unset]"
+        disabled={isPending}
+        onClick={handleFetchFilteredData}
+        >
+            {isPending? "Downloading...":"DownLoad filtered Orders"}
+        </Button>
+  }
+
+</div>
       </div>
+         
     </div>
   )
 }

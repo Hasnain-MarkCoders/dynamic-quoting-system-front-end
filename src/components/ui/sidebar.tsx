@@ -50,7 +50,7 @@ function useSidebar() {
 }
 
 function SidebarProvider({
-  defaultOpen = false,
+  defaultOpen = true,
   open: openProp,
   onOpenChange: setOpenProp,
   className,
@@ -250,14 +250,15 @@ function Sidebar({
 }
 
 function SidebarTrigger({
-  className,
-  onClick,
-  ...props
+  // className,
+  // onClick,
+  // ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar()
+  // const { toggleSidebar } = useSidebar()
 
   return (
-    <Button
+   <>
+    {/* <Button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="ghost"
@@ -270,7 +271,8 @@ function SidebarTrigger({
       {...props}
     >
       <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+    </Button> */}
+   </>
   )
 }
 

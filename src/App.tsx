@@ -2,11 +2,12 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Login from '@/pages/Auth';
 import UploadPage from '@/pages/UploadPage';
 import { useUserStore } from '@/stores/user.store';
-import { LOGIN, UPLOAD , NOT_FOUND} from '@/constants.ts';
+import { LOGIN, UPLOAD , NOT_FOUND, PRICES} from '@/constants.ts';
 import { RouterProvider } from 'react-router-dom';
 import { type ReactNode } from "react";
 import NotFound from '@/pages/NotFound';
 import Layout from './pages/Layout';
+import Prices from './pages/Prices';
 type Props = {
   children: ReactNode;
 };
@@ -32,6 +33,14 @@ const UnProtectedRoute = ({ children }:Props) => {
     element: (
       <ProtectedRoute>
         <UploadPage />
+      </ProtectedRoute>
+    ),
+  },
+    {
+    path: PRICES,
+    element: (
+      <ProtectedRoute>
+        <Prices />
       </ProtectedRoute>
     ),
   },

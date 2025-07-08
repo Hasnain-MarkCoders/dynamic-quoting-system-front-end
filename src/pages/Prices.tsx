@@ -1,24 +1,27 @@
-import { useState, useCallback } from 'react';
-import { Button } from '../components/ui/button';
-import { useDropzone } from 'react-dropzone';
-import type { FileWithPath } from 'react-dropzone';
-import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
-import type { UseMutationResult } from '@tanstack/react-query';
-import { toast, Toaster } from 'sonner';
-import { X } from 'lucide-react';
-import type { AxiosError } from 'axios';
-import { useUserStore } from "@/stores/user.store.ts"
-import Filter from '@/components/Filter';
-import { cn, extractLastPart, getFiltersFromUrl } from '@/lib/utils';
-import { useLocation } from "react-router-dom"
-import LottieUploadAnimatedIcon from '@/components/LottieUploadAnimatedIcon';
-function UploadPage() {
+import ConfirmDialog from "@/components/Confirm";
+import LottieUploadAnimatedIcon from "@/components/LottieUploadAnimatedIcon";
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { useUserStore } from "@/stores/user.store";
+import { useMutation, type UseMutationResult } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import { X } from "lucide-react";
+import { useCallback, useState } from "react";
+import { useDropzone, type FileWithPath } from "react-dropzone";
+import { toast, Toaster } from "sonner";
+const Prices = () => {
   const { token } = useUserStore();
-  const location = useLocation()
-  const [file, setFile] = useState<FileWithPath | null>(null);
-  const [isPending, setIsPending] = useState(false)
-  const [isDownLoadingSample, setIsDownloadingSample] = useState(false)
+    const [file, setFile] = useState<FileWithPath | null>(null);
+    const [isDownLoading, setIsDownloading] = useState(false)
+    const [isDownLoadingSample, setIsDownloadingSample] = useState(false)
+
+    const [isOpenConfrim, setIsOpenConfirm] = useState(false)
+    const handleOpenConfirm=()=>{
+        setIsOpenConfirm(true)
+    }
+      const handleCloseConfirm=()=>{
+        setIsOpenConfirm(false)
+    }
   const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
     const selectedFile = acceptedFiles[0];
     if (!selectedFile) return;
@@ -39,22 +42,13 @@ function UploadPage() {
   const uploadMutation: UseMutationResult<any, unknown, FormData> = useMutation({
     mutationFn: async (formData: FormData) => {
 
-      const response = await axios.post('https://anton.markcoders.com/dynamic_qouting_system/api/upload', formData, {
+      const response = await axios.post('https://anton.markcoders.com/dynamic_qouting_system/api/pricing-upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data', 'Authorization': "Bearer " + token },
-        responseType: 'blob',
       });
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success('File processed successfully!');
-      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'result.xlsx');
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      toast.success(data.message);
       setFile(null);
     },
     onError: async (error: unknown) => {
@@ -76,17 +70,44 @@ function UploadPage() {
     }
   })
 
+
+  const handleSubmit = () => {
+    if (!file) {
+      toast.error('Please select a file first.');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+    uploadMutation.mutate(formData);
+  };
+
+  const handleRetry = () => {
+    if (!file) {
+      toast.error('Please select a file first.');
+      return;
+    }
+    handleSubmit();
+  };
+
+
+
+
+
+
+
+
+
   const downloadSampleFile = async () => {
+    setIsDownloadingSample(true)
     try {
-      setIsDownloadingSample(true)
-      const response = await axios.get('https://anton.markcoders.com/dynamic_qouting_system/api/example-file', {
+      const response = await axios.get('https://anton.markcoders.com/dynamic_qouting_system/api/pricing-example-file', {
         headers: { 'Authorization': "Bearer " + token },
         responseType: 'blob',
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'sample-file.xlsx'); // Change name/extension as needed
+      link.setAttribute('download', 'pricing-file.xlsx'); 
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -108,88 +129,70 @@ function UploadPage() {
       }
     }
     finally{
-      setIsDownloadingSample(false)
+        setIsDownloadingSample(false)
     }
 
 
   }
-  const handleSubmit = () => {
-    if (!file) {
-      toast.error('Please select a file first.');
-      return;
-    }
-    const formData = new FormData();
-    formData.append('file', file);
-    uploadMutation.mutate(formData);
-  };
-
-  const handleRetry = () => {
-    if (!file) {
-      toast.error('Please select a file first.');
-      return;
-    }
-    handleSubmit();
-  };
-
-  const handleFetchFilteredData = async () => {
 
 
+  const downloadExistingPricing = async () => {
+    setIsDownloading(true)
     try {
-      setIsPending(true)
-      const response = await axios.get('https://anton.markcoders.com/dynamic_qouting_system/api/export', {
-        params: {
-          ...(getFiltersFromUrl(location.search) || {}),
-        },
-        headers: {
-          "Authorization": "Bearer " + token,
-        },
-        responseType: "blob"
-
+      const response = await axios.get('https://anton.markcoders.com/dynamic_qouting_system/api/pricing-export', {
+        headers: { 'Authorization': "Bearer " + token },
+        responseType: 'blob',
       });
-
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      const fileName = extractLastPart(url, ".xlsx")
-      link.setAttribute('download', fileName); // Change name/extension as needed
+      link.setAttribute('download', 'pricing-file.xlsx'); 
       document.body.appendChild(link);
       link.click();
       link.remove();
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        const msg = err.response?.data?.message || 'Error Fetching Filtered failed';
-        toast.error(msg);
-      } else {
-        toast.error('Unexpected error');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response && axiosError.response.data instanceof Blob) {
+          const text = await axiosError.response.data.text();
+          try {
+            const json = JSON.parse(text);
+            toast.error(json.error || 'Unknown server error.');
+          } catch {
+            toast.error('Failed to parse error response.');
+          }
+        }
+        else {
+          toast.error('An unexpected error occurred.');
+        }
       }
-    }finally{
-      setIsPending(false)
     }
-  };
+    finally{
+        setIsDownloading(false)
+    }
 
+
+  }
   return (
-    <div className="p-4 ">
-          <div className="flex justify-between items-center pb-8">
-        <h1 className="text-3xl font-bold">Orders</h1>
+    <div className="p-4">
+       
+        <div className="flex justify-between items-center pb-20">
+        <h1 className="text-3xl font-bold">Prices</h1>
         <Button
-        disabled={isPending}
-        onClick={handleFetchFilteredData}
+        disabled={isDownLoading}
+        onClick={downloadExistingPricing}
         >
-            {isPending? "Downloading...":"DownLoad All Orders"}
+            {isDownLoading? "Downloading...":"DownLoad Existing Prices"}
         </Button>
-        </div> 
-        <div className='mb-4'>
-            <h1 className="text-md mb-4  poppins-bold !font-[300] ">Fetch data from the EKOOMS database.</h1>
-        <Filter />
-
-        </div>
-      <div className="border border-dashed border-red-400 p-6 rounded-lg w-full max-w-[500px] mx-auto  text-center  shadow-md">
+        </div>  
+       
+           <div className="border border-dashed border-red-400 p-6 rounded-lg w-full max-w-[500px] mx-auto text-center  shadow-md">
         <h1 className="text-2xl lg:text-3xl font-semibold mb-4 poppins-bold ">Dynamic Quoting System</h1>
 
 
         <div
-
-          onClick={isDownLoadingSample?()=>{}:downloadSampleFile}
+            
+          onClick={!isDownLoadingSample? downloadSampleFile:()=>{}}
           className={cn("text-black-500 underline mb-6 inline-block cursor-pointer", {
             "pointer-events-none opacity-[0.5]":isDownLoadingSample
           })}
@@ -197,12 +200,11 @@ function UploadPage() {
           Download Sample File
         </div>
 
-        <div {...getRootProps()} className={`cursor-pointer border p-6 rounded ${uploadMutation.isPending ? 'opacity-50 pointer-events-none' : ''}`}>
-          <div>
-               <LottieUploadAnimatedIcon/>
+        <div {...getRootProps()} className={`cursor-pointer border pt-2 px-4 pb-4 rounded ${uploadMutation.isPending ? 'opacity-50 pointer-events-none' : ''}`}>
+            <div>
           <input {...getInputProps()} />
-
-          </div>
+                <LottieUploadAnimatedIcon/>
+            </div>
           {isDragActive ? (
             <p>Drop the file here...</p>
           ) : (
@@ -227,9 +229,9 @@ function UploadPage() {
           <div className="mt-4 flex flex-col gap-2">
             <Button
               disabled={uploadMutation.isPending}
-              onClick={handleSubmit}
+              onClick={handleOpenConfirm}
             >
-              {uploadMutation.isPending ? 'Processing...' : 'Upload and Process File'}
+              {uploadMutation.isPending ? 'Updating...' : 'Update pricing'}
             </Button>
             {uploadMutation.isError && (
               <Button
@@ -242,11 +244,17 @@ function UploadPage() {
           </div>
         )}
       </div>
-
- 
       <Toaster richColors />
+      <ConfirmDialog
+      title="Are you sure you want to update the pricing?"
+      description="Updating the pricing will apply the new values to all items. This action cannot be undone."
+      open={isOpenConfrim}
+      handleClose={handleCloseConfirm}
+      onConfirm={handleSubmit}
+      />
+      
     </div>
-  );
+  )
 }
 
-export default UploadPage;
+export default Prices

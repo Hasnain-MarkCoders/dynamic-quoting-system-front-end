@@ -10,10 +10,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Home, Settings } from "lucide-react"
+import { CalendarArrowDown, DollarSign } from "lucide-react"
 import logo from "@/assets/images/logo.png"
 import Mobilelogo from "@/assets/images/easyLifeMobileLogo.png"
 import Logout from "./ui/Logout"
+import { Link } from "react-router-dom"
 
 
 export function AppSidebar() {
@@ -21,14 +22,14 @@ export function AppSidebar() {
 
   const items = [
   {
-    title: "Home",
-    url: "#",
-    icon: Home,
+    title: "Orders",
+    url: "/",
+    icon: CalendarArrowDown,
   },
   {
     title: "Paymetns",
-    url: "#",
-    icon: Settings,
+    url: "/prices",
+    icon: DollarSign,
   },
 ]
   return (
@@ -65,12 +66,16 @@ export function AppSidebar() {
                   <SidebarMenuButton 
                   className="w-[100%]  mx-auto"
                   asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon  
                       
                       />
-                      {/* <span>{item.title}</span> */}
-                    </a>
+                      <span>
+                        {
+                          item.title
+                        }
+                      </span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

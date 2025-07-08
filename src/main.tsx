@@ -6,13 +6,16 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
+import { SidebarProvider } from './components/ui/sidebar.tsx'
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
 
   <StrictMode>
+    <SidebarProvider>
     <QueryClientProvider client={queryClient}>
           <App />
     </QueryClientProvider>
+    </SidebarProvider>
   </StrictMode>,
 )

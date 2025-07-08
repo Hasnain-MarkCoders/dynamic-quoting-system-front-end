@@ -41,8 +41,8 @@ export function AppSidebar() {
     >
       <SidebarHeader>
         <>
-            <div className={cn("flex items-center flex-col justify-between gap-2", {
-            "flex-row":open
+            <div className={cn("flex items-center flex-row   justify-between gap-2", {
+            "md:flex-col ":!open
           })}>
         {
 

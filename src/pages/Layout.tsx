@@ -1,6 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar"
-import { useSidebar } from "@/components/ui/sidebar"
-import { AlignJustify } from "lucide-react";
+import MobileMenu from "@/components/MobileMenu";
+import { SidebarProvider } from "@/components/ui/sidebar"
 import type { ReactNode } from "react";
 
 type Props = {
@@ -8,18 +8,20 @@ type Props = {
 };
 const Layout = ({ children }: Props) => {
   
-  const {toggleSidebar} = useSidebar()
   return (
-    <div className=" w-full"> 
-        <div className="md:hidden p-4 pb-0">
+    <div className="w-full"> 
+       
         
-          <AlignJustify onClick={toggleSidebar} />
-   
-        </div>
-      <main className='w-full md:pl-14'>
+      <main className='w-full'>
+        <SidebarProvider>
+
       <AppSidebar  />
+          <div className="w-full">
+            <MobileMenu/>
 
         {children}
+          </div>
+        </SidebarProvider>
       </main>
     </div>
   )

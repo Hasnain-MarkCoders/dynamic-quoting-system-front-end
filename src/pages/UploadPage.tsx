@@ -164,7 +164,7 @@ function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex flex-col  gap-[30px] items-center justify-center p-4 ">
+    <div className="min-h-screen relative flex flex-col w-full  gap-[30px] items-center justify-center p-4 ">
       <div className='absolute top-[50px] right-[50px]'>
         <Logout />
       </div>

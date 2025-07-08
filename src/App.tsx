@@ -4,15 +4,25 @@ import UploadPage from '@/pages/UploadPage';
 import { useUserStore } from '@/stores/user.store';
 import { LOGIN, UPLOAD , NOT_FOUND} from '@/constants.ts';
 import { RouterProvider } from 'react-router-dom';
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import NotFound from '@/pages/NotFound';
-
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar.tsx"
 type Props = {
   children: ReactNode;
 };
 const ProtectedRoute = ({ children }:Props) => {
   const { token } = useUserStore();
-  return token ? children : <Navigate to={LOGIN} />;
+  return token ? <>
+   <SidebarProvider>
+        <AppSidebar />
+        <main className='w-full'>
+          <SidebarTrigger />
+  {children}
+        </main>
+      </SidebarProvider>
+
+  </> : <Navigate to={LOGIN} />;
 };
 const UnProtectedRoute = ({ children }:Props) => {
   const { token } = useUserStore();
@@ -40,9 +50,6 @@ const UnProtectedRoute = ({ children }:Props) => {
   },
 ]);
 const App  =()=>{
-  useEffect(() => {
-  document.documentElement.classList.add("dark");
-}, []);
   return <RouterProvider router={router} />;
 }
 export default App

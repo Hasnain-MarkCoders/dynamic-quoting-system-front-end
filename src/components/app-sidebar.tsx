@@ -29,7 +29,7 @@ export function AppSidebar() {
     icon: CalendarArrowDown,
   },
   {
-    title: "Paymetns",
+    title: "Payments",
     url: "/prices",
     icon: DollarSign,
   },

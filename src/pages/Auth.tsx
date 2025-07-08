@@ -46,7 +46,7 @@ function Auth() {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center  p-4">
+        <div className="min-h-screen flex items-center justify-center  p-4 w-full">
         <div className="w-full h-screen  bg-[url('https://imgix.obi.de/api/disc/cms/public/dam/DE-AT-Assets/bauen/werkzeug-pflege/1-werkzeugpflege-1061173208.jpg?crop=focalpoint&fit=crop&fp-x=0.673&fp-y=0.42&fp-z=1&w=1920&auto=format%2Ccompress&h=1079')] bg-cover bg-center fixed">
   <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-teal-400 opacity-60" />
 </div>

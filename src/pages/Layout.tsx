@@ -1,5 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar"
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import type { ReactNode } from "react";
 
 type Props = {
@@ -11,7 +11,6 @@ const Layout = ({ children }: Props) => {
     <SidebarProvider >
       <AppSidebar  />
       <main className='w-full'>
-        <SidebarTrigger />
         {children}
       </main>
     </SidebarProvider>

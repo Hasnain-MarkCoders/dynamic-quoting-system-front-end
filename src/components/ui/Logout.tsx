@@ -21,7 +21,7 @@ const logout = useUserStore((state) => state.logout);
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="cursor-pointer">
+        <div className="cursor-pointer mr-auto">
       <SidebarMenuButton>
           <LogOut />
       </SidebarMenuButton>

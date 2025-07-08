@@ -6,21 +6,14 @@ import { LOGIN, UPLOAD , NOT_FOUND} from '@/constants.ts';
 import { RouterProvider } from 'react-router-dom';
 import { type ReactNode } from "react";
 import NotFound from '@/pages/NotFound';
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar.tsx"
+import Layout from './pages/Layout';
 type Props = {
   children: ReactNode;
 };
 const ProtectedRoute = ({ children }:Props) => {
   const { token } = useUserStore();
   return token ? <>
-   <SidebarProvider>
-        <AppSidebar />
-        <main className='w-full'>
-          <SidebarTrigger />
-  {children}
-        </main>
-      </SidebarProvider>
+  <Layout>{children}</Layout>
 
   </> : <Navigate to={LOGIN} />;
 };

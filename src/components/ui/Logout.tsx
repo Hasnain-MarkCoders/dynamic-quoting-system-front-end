@@ -10,6 +10,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "./button";
+import { SidebarMenuButton } from "./sidebar";
 
 const Logout = () => {
 const logout = useUserStore((state) => state.logout);
@@ -20,11 +21,10 @@ const logout = useUserStore((state) => state.logout);
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="cursor-pointer top-[50px]  rounded-[10px] p-[10px] right-[50px]">
-          <Button>
-
+        <div className="cursor-pointer">
+      <SidebarMenuButton>
           <LogOut />
-          </Button>
+      </SidebarMenuButton>
         </div>
       </DialogTrigger>
       <DialogContent>

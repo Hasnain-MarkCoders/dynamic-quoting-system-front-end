@@ -9,7 +9,6 @@ import { toast, Toaster } from 'sonner';
 import { X } from 'lucide-react';
 import type { AxiosError } from 'axios';
 import { useUserStore } from "@/stores/user.store.ts"
-import Logout from '@/components/ui/Logout';
 import Filter from '@/components/Filter';
 import { extractLastPart, getFiltersFromUrl } from '@/lib/utils';
 import { useLocation } from "react-router-dom"
@@ -165,9 +164,6 @@ function UploadPage() {
 
   return (
     <div className="min-h-screen relative flex flex-col w-full  gap-[30px] items-center justify-center p-4 ">
-      <div className='absolute top-[50px] right-[50px]'>
-        <Logout />
-      </div>
       <div className="border border-dashed border-red-400 p-6 rounded-lg w-full max-w-screen-lg text-center  shadow-md">
         <h1 className="text-2xl lg:text-3xl font-semibold mb-4 poppins-bold ">Dynamic Quoting System</h1>
 

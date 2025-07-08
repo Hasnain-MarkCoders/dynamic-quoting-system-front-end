@@ -5,7 +5,7 @@ import { toast, Toaster } from 'sonner';
 import { useUserStore } from '@/stores/user.store.ts';
 import { UPLOAD } from '@/constants.ts';
 import { Button } from '@/components/ui/button';
-import logo from "@/assets/favicon_io/logo.png"
+import logo from "@/assets/images/logo.png"
 function Auth() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
